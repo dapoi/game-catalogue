@@ -1,7 +1,8 @@
-package com.ewide.test.gamecatalogue
+package com.ewide.test.gamecatalogue.presentation.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.ewide.test.gamecatalogue.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
