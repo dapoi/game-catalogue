@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/gamesFragment">
 
+    <fragment
+        android:id="@+id/gamesFragment"
+        android:name="com.ewide.test.gamecatalogue.presentation.view.list.GamesFragment"
+        android:label="fragment_games"
+        tools:layout="@layout/fragment_games" />
+    <fragment
+        android:id="@+id/detailGamesFragment"
+        android:name="com.ewide.test.gamecatalogue.presentation.view.detail.DetailGamesFragment"
+        android:label="fragment_detail_games"
+        tools:layout="@layout/fragment_detail_games" />
+    <fragment
+        android:id="@+id/bookmarkGamesFragment"
+        android:name="com.ewide.test.gamecatalogue.presentation.view.list.BookmarkGamesFragment"
+        android:label="fragment_bookmark_games"
+        tools:layout="@layout/fragment_bookmark_games" />
 </navigation>
