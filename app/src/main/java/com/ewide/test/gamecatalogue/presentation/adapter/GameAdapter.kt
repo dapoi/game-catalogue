@@ -9,7 +9,9 @@ import com.bumptech.glide.Glide
 import com.ewide.test.gamecatalogue.data.source.remote.model.GamesResponse
 import com.ewide.test.gamecatalogue.databinding.ItemListGameBinding
 
-class GameAdapter : ListAdapter<GamesResponse, GameAdapter.GameViewHolder>(GameAdapter) {
+class GameAdapter(
+    private var onClick: (GamesResponse) -> Unit
+) : ListAdapter<GamesResponse, GameAdapter.GameViewHolder>(GameAdapter) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
         return GameViewHolder(
@@ -38,6 +40,10 @@ class GameAdapter : ListAdapter<GamesResponse, GameAdapter.GameViewHolder>(GameA
                     .into(ivGame)
                 tvName.text = game.external
                 tvPrices.text = game.cheapest
+
+                itemView.setOnClickListener {
+                    onClick(game)
+                }
             }
         }
     }

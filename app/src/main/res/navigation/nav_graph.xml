@@ -9,12 +9,20 @@
         android:id="@+id/gamesFragment"
         android:name="com.ewide.test.gamecatalogue.presentation.view.list.GamesFragment"
         android:label="fragment_games"
-        tools:layout="@layout/fragment_games" />
+        tools:layout="@layout/fragment_games" >
+        <action
+            android:id="@+id/action_gamesFragment_to_detailGamesFragment"
+            app:destination="@id/detailGamesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailGamesFragment"
         android:name="com.ewide.test.gamecatalogue.presentation.view.detail.DetailGamesFragment"
         android:label="fragment_detail_games"
-        tools:layout="@layout/fragment_detail_games" />
+        tools:layout="@layout/fragment_detail_games" >
+        <argument
+            android:name="gameID"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/bookmarkGamesFragment"
         android:name="com.ewide.test.gamecatalogue.presentation.view.list.BookmarkGamesFragment"

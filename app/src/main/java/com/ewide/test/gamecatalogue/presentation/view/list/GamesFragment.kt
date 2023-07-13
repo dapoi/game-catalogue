@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.ewide.test.gamecatalogue.databinding.FragmentGamesBinding
 import com.ewide.test.gamecatalogue.presentation.adapter.GameAdapter
 import com.ewide.test.gamecatalogue.presentation.view.BaseFragment
@@ -30,7 +31,16 @@ class GamesFragment : BaseFragment<FragmentGamesBinding>(FragmentGamesBinding::i
     }
 
     private fun initAdapter() {
-        gameAdapter = GameAdapter()
+        gameAdapter = GameAdapter(
+            onClick = {
+                val action = it.gameID?.let { id ->
+                    GamesFragmentDirections.actionGamesFragmentToDetailGamesFragment(id)
+                }
+                if (action != null) {
+                    findNavController().navigate(action)
+                }
+            }
+        )
         binding.rvGames.apply {
             adapter = gameAdapter
         }
