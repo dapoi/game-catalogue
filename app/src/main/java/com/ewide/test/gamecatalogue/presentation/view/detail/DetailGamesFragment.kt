@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.ewide.test.gamecatalogue.R
+import com.ewide.test.gamecatalogue.data.source.local.model.DetailEntity
 import com.ewide.test.gamecatalogue.data.source.remote.model.DealsItem
 import com.ewide.test.gamecatalogue.data.source.remote.model.DetailResponse
 import com.ewide.test.gamecatalogue.databinding.FragmentDetailGamesBinding
@@ -28,6 +33,7 @@ class DetailGamesFragment :
 
     private val gameViewModel: GameViewModel by viewModels()
     private val detailAdapter by lazy { DetailAdapter() }
+    private val args: DetailGamesFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,6 +70,7 @@ class DetailGamesFragment :
             tvDate.text = formatter
 
             initAdapter(result.deals)
+            initFavorite(result)
         }
     }
 
@@ -81,5 +88,48 @@ class DetailGamesFragment :
         val sdf = SimpleDateFormat(format, Locale.getDefault()) // default local
         sdf.timeZone = TimeZone.getDefault() // set anytime zone you need
         return sdf.format(Date(time * 1000))
+    }
+
+    private fun initFavorite(result: DetailResponse) {
+        val detailEntity = result.let { data ->
+            DetailEntity(
+                gameID = args.gameID,
+                image = data.info?.thumb.toString(),
+                gameName = data.info?.title.toString(),
+                price = data.deals?.get(0)?.price.toString(),
+            )
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                gameViewModel.isFavorite?.collect { state ->
+                    setFavorite(state)
+                    binding.toolbar.setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.action_fav -> {
+                                if (state) {
+                                    gameViewModel.deleteFromFavorite(detailEntity)
+                                } else {
+                                    gameViewModel.insertToFavorite(detailEntity)
+                                }
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setFavorite(isFav: Boolean) {
+        binding.toolbar.menu.findItem(R.id.action_fav).apply {
+            if (isFav) {
+                setIcon(R.drawable.ic_love_true)
+            } else {
+                setIcon(R.drawable.ic_love_false)
+            }
+        }
     }
 }

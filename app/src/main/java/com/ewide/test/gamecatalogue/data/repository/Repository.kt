@@ -1,5 +1,7 @@
 package com.ewide.test.gamecatalogue.data.repository
 
+import com.ewide.test.gamecatalogue.data.source.local.db.GameDao
+import com.ewide.test.gamecatalogue.data.source.local.model.DetailEntity
 import com.ewide.test.gamecatalogue.data.source.remote.model.DetailResponse
 import com.ewide.test.gamecatalogue.data.source.remote.model.GamesResponse
 import com.ewide.test.gamecatalogue.data.source.remote.network.ApiService
@@ -13,7 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class GameRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val gameDao: GameDao
 ) : GameRepository {
 
     override suspend fun getListGames(title: String): Flow<Resource<List<GamesResponse>>> {
@@ -45,10 +48,35 @@ class GameRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun insertFavGame(game: DetailEntity) {
+        gameDao.insertGame(game)
+    }
+
+    override suspend fun deleteFavGame(game: DetailEntity) {
+        gameDao.deleteGame(game)
+    }
+
+    override fun isFavorite(gameID: String): Flow<Boolean> {
+        return gameDao.isFavorite(gameID)
+    }
+
+    override fun getFavoriteGame(): Flow<List<DetailEntity>> {
+        return gameDao.getFavoriteGame()
+    }
 }
 
 interface GameRepository {
+
     suspend fun getListGames(title: String): Flow<Resource<List<GamesResponse>>>
 
     suspend fun getDetail(gameID: String): Flow<Resource<DetailResponse>>
+
+    suspend fun insertFavGame(game: DetailEntity)
+
+    suspend fun deleteFavGame(game: DetailEntity)
+
+    fun isFavorite(gameID: String): Flow<Boolean>
+
+    fun getFavoriteGame(): Flow<List<DetailEntity>>
 }

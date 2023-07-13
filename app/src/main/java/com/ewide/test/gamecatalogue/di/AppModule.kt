@@ -1,13 +1,18 @@
 package com.ewide.test.gamecatalogue.di
 
+import android.content.Context
+import androidx.room.Room
 import com.ewide.test.gamecatalogue.data.repository.GameRepository
 import com.ewide.test.gamecatalogue.data.repository.GameRepositoryImpl
+import com.ewide.test.gamecatalogue.data.source.local.db.GameDB
+import com.ewide.test.gamecatalogue.data.source.local.db.GameDao
 import com.ewide.test.gamecatalogue.data.source.remote.network.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -50,8 +55,24 @@ object AppModule {
 
     @Provides
     fun provideRepository(
-        apiService: ApiService
+        apiService: ApiService,
+        gameDao: GameDao
     ): GameRepository {
-        return GameRepositoryImpl(apiService)
+        return GameRepositoryImpl(apiService, gameDao)
     }
+
+    @Provides
+    fun provideGameDB(
+        @ApplicationContext context: Context
+    ): GameDB {
+        return Room.databaseBuilder(
+            context,
+            GameDB::class.java, "game.db"
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    fun provideGameDao(
+        gameDB: GameDB
+    ) = gameDB.gameDao()
 }

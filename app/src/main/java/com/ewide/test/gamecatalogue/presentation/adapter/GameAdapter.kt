@@ -24,10 +24,8 @@ class GameAdapter(
     }
 
     override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
-        val game = getItem(position)
-        if (game != null) {
-            holder.bind(game)
-        }
+        val data = getItem(position)
+        holder.bind(data)
     }
 
     inner class GameViewHolder(

@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".presentation.view.detail.DetailGamesFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_fav"
         app:navigationIcon="@drawable/ic_back"
         app:title="Detail" />
 

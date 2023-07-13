@@ -31,28 +31,40 @@ class GamesFragment : BaseFragment<FragmentGamesBinding>(FragmentGamesBinding::i
     }
 
     private fun initAdapter() {
-        gameAdapter = GameAdapter(
-            onClick = {
-                val action = it.gameID?.let { id ->
-                    GamesFragmentDirections.actionGamesFragmentToDetailGamesFragment(id)
-                }
-                if (action != null) {
-                    findNavController().navigate(action)
-                }
+        gameAdapter = GameAdapter {
+            val action = it.gameID.let { id ->
+                GamesFragmentDirections.actionGamesFragmentToDetailGamesFragment(id)
             }
-        )
+            findNavController().navigate(action)
+        }
         binding.rvGames.apply {
             adapter = gameAdapter
+
+            // hide fab when scroll
+            addOnScrollListener(object :
+                androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(
+                    recyclerView: androidx.recyclerview.widget.RecyclerView,
+                    newState: Int
+                ) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE) {
+                        binding.fabFav.show()
+                    } else {
+                        binding.fabFav.hide()
+                    }
+                }
+            })
         }
     }
 
     private fun initViewModel() {
-        gameViewModel.setListGame("Batman")
         viewLifecycleOwner.lifecycleScope.launch {
             gameViewModel.getListGame.collect { response ->
                 binding.apply {
                     progressBar.isVisible = response is Resource.Loading
                     rvGames.isVisible = response is Resource.Success
+                    fabFav.isVisible = response is Resource.Success
                     clError.isVisible = response is Resource.Error
 
                     if (response is Resource.Success) {
@@ -62,6 +74,12 @@ class GamesFragment : BaseFragment<FragmentGamesBinding>(FragmentGamesBinding::i
 
                     btnRefresh.setOnClickListener {
                         initViewModel()
+                    }
+
+                    fabFav.setOnClickListener {
+                        findNavController().navigate(
+                            GamesFragmentDirections.actionGamesFragmentToBookmarkGamesFragment()
+                        )
                     }
                 }
             }

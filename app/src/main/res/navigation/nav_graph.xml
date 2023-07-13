@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_gamesFragment_to_detailGamesFragment"
             app:destination="@id/detailGamesFragment" />
+        <action
+            android:id="@+id/action_gamesFragment_to_bookmarkGamesFragment"
+            app:destination="@id/bookmarkGamesFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailGamesFragment"
@@ -27,5 +30,9 @@
         android:id="@+id/bookmarkGamesFragment"
         android:name="com.ewide.test.gamecatalogue.presentation.view.list.BookmarkGamesFragment"
         android:label="fragment_bookmark_games"
-        tools:layout="@layout/fragment_bookmark_games" />
+        tools:layout="@layout/fragment_bookmark_games" >
+        <action
+            android:id="@+id/action_bookmarkGamesFragment_to_detailGamesFragment"
+            app:destination="@id/detailGamesFragment" />
+    </fragment>
 </navigation>
